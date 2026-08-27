@@ -466,4 +466,5 @@ class GridPage:
     # Convenience function: Show us the work when it's done. Only 
     # known to work on Macintosh.
     def open(self):
-        os.system('open "%s"' % self.get_file_name())
+        pass
+        # os.system('open "%s"' % self.get_file_name())
