@@ -3,15 +3,33 @@ from contime import *
 from location import *
 import config
 import cleaner
+from datetime import datetime
 
 @total_ordering
 class Session:
     def __init__(self, data):
-        self.id = data['sessionid']
-        self.day = data['day']
-        self.time = data['time']
-        self.duration = duration_str_to_minutes(data['duration'])
-        self.location = gLocationLookup[data['room']]
+        if 'sessionid' in data:
+            self.id = data['id']
+        else:
+            self.id = data['id']
+        
+        if 'datetime' in data:
+            dt = datetime.fromisoformat(data['datetime'])
+            self.day = dt.astimezone(config.tz).strftime('%a')
+            self.time = dt.astimezone(config.tz).strftime('%l:%M %p')
+        else:
+            self.day = data['day']
+            self.time = data['time']
+        
+        if 'duration' in data:
+            self.duration = duration_str_to_minutes(data['duration'])
+        else:
+            self.duration = data['mins']
+
+        if 'room' in data:
+            self.location = gLocationLookup[data['room']]
+        else:
+            self.location = gLocationLookup[data['loc'][0]]
         self.title = data['title']
         (self.title, _) = cleaner.clean_tags(self.title, ['i'])
         # We have other info on each session, but it's ignored for the

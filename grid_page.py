@@ -205,7 +205,7 @@ class TimeSlotBucketArray(bucket.BucketArray):
         self.day_number = day_number
         super().__init__()
 
-    def make_buckets(self):
+    def make_buckets(self, level = None):
         for _ in range(self.time_range.interval_count()):
             yield bucket.Bucket(autosort.AutoSortedArray())
 

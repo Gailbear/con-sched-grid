@@ -1,3 +1,4 @@
+import location
 ''' Support class for BucketArray. Instances of this class
 or a subclass of this class should be used to contain the 
 items that have been sorted by BucketArray.
@@ -40,15 +41,16 @@ This does an O(n) sort, but of limited granularity if more than one
 item lands in the same bucket.
 '''
 class BucketArray:
-    def __init__(self):
+    def __init__(self, level = None):
         self.buckets = []
-        for bucket in self.make_buckets():
+        for bucket in self.make_buckets(level):
             self.buckets.append(bucket)
+        self.level = level
 
-    def make_buckets(self):
+    def make_buckets(self, level = None) -> list[Bucket]:
         raise Exception("Abstract; must override make_buckets")
 
-    def index_range_for_item(self, item):
+    def index_range_for_item(self, item) -> tuple[int, int] :
         raise Exception("Abstract; must override index_range_for_item")
 
     def overlapper_wrapper_for_item(self, item):
@@ -56,7 +58,7 @@ class BucketArray:
 
     def add_item(self, session):
         ''' Sorts one item into the approprate bucket(s). '''
-        first_bucket_number, last_bucket_number  = \
+        first_bucket_number, last_bucket_number = \
             self.index_range_for_item(session)
         if first_bucket_number < 0:
             session = self.overlapper_wrapper_for_item(session)
@@ -68,3 +70,21 @@ class BucketArray:
     def get_buckets(self):
         return self.buckets
     
+    def get_level(self):
+        return self.level
+    
+class LevelBucketArray:
+    def __init__(self, bucket_class = BucketArray):
+        self.level_buckets: dict[location.Level, BucketArray] = dict()
+        for level in location.gLevelList:
+            self.level_buckets[level] = bucket_class(level) # type: ignore
+            
+    def overlapper_wrapper_for_item(self, item):
+        return item
+
+    def add_item(self, session):
+        level = session.get_level()
+        return self.level_buckets[level].add_item(session)
+    
+    def get_buckets(self):
+        return [b for lb in self.level_buckets.values() for b in lb.get_buckets()]

@@ -2,6 +2,7 @@
 import configparser
 import re
 import location
+from zoneinfo import ZoneInfo
 
 cfg = configparser.ConfigParser(allow_no_value=True, strict=False,
                                 inline_comment_prefixes=('#',))
@@ -9,6 +10,7 @@ cfg = configparser.ConfigParser(allow_no_value=True, strict=False,
 cfg.read("example-data/conguide.cfg")
 
 event_name = cfg.get('convention', 'convention')
+tz = ZoneInfo(cfg.get('convention', 'timezone', fallback='America/New_York'))
 
 # Notice the differences between sections, grid rooms, and aliases:
 # If grid rooms is specified, each grid room is labeled with its own
@@ -58,10 +60,10 @@ for section in cfg.sections():
     m = re.match(r'(level|venue) (.*)', section)
     if m:
         name = m.group(2)
-        pubsname = cfg.get(section, 'pubsname')
-        floor = int(pubsname[0])
-        wing = pubsname[1]
-        level = location.Level(name, floor, wing)
+        # pubsname = cfg.get(section, 'pubsname')
+        # floor = int(pubsname[0])
+        # wing = pubsname[1]
+        level = location.Level(name, None, None)
         rooms = cfg.get(section, 'rooms')
         rnames = re.split(r',\s*', rooms)
         for rname in rnames:

@@ -2,6 +2,7 @@ import os
 from datetime import datetime, timezone
 import csv
 from session import Session
+import json
 
 class Database:
     def __init__(self, file_name):
@@ -13,11 +14,16 @@ class Database:
         # See https://discuss.codecademy.com/t/what-does-the-newline-argument-do/463575
         # for an explanation of why we use the newline argument when opening a file
         # for the csv module to read.
-        fh = open(self.file_name, 'rt', encoding='utf-8', newline='')
-        reader = csv.DictReader(fh)
-        for row in reader:
-            results.append(Session(row))
-        fh.close()
+        if self.file_name.endswith('.csv'):
+            fh = open(self.file_name, 'rt', encoding='utf-8', newline='')
+            reader = csv.DictReader(fh)
+            for row in reader:
+                results.append(Session(row))
+            fh.close()
+        else:
+            fh = open(self.file_name, 'rt', encoding='utf-8', newline='')
+            data = json.load(fh)['schedule']
+            [results.append(Session(s)) for s in data]
         return results
 
     def get_data_timestamp(self):

@@ -129,7 +129,7 @@ class Level(Location):
     def __init__(self, name, floor, wing, short_name=None):
         self.floor = floor
         self.wing = wing
-        if short_name is None:
+        if short_name is None and self.floor is not None and self.wing is not None:
             short_name = "%d%s" % (floor, wing)
         super().__init__(name, short_name)
         global gLevelList
@@ -160,14 +160,19 @@ class Level(Location):
         return True
 
     def __lt__(self, other):
-        if self.wing > other.wing:
-            return True
-        if self.wing == other.wing:
-            if self.floor > other.floor:
-                return True
-            if self.floor == other.floor:
-                return self.name < other.name
-        return False
+        return self.name < other.name
+        # if self.wing > other.wing:
+        #     return True
+        # if self.wing == other.wing:
+        #     if self.floor > other.floor:
+        #         return True
+        #     if self.floor == other.floor:
+        #         return self.name < other.name
+        #return False
+
+    def __hash__(self):
+        return self.name.__hash__()
+
         
 class ComboRoom(Location):
     def __init__(self, name, rooms):

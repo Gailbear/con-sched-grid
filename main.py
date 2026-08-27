@@ -25,12 +25,12 @@ class PageBuilder:
 class GridMaker:
     def __init__(self):
         self.contents = None
-        self.db = db_fetch.Database("example-data/pocketprogram.csv")
+        self.db = db_fetch.Database("example-data/plano_schedule.json")
 
     def prep_data(self):
         ''' Create a time bucket to hold sessions in each slice of each day.
         '''
-        self.contents = PageBucketArray()
+        self.contents = bucket.LevelBucketArray(PageBucketArray)
 
         for session in self.db.get_session_data():
             if session.is_included_in_grid():

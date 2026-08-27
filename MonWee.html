@@ -1,0 +1,355 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+
+body {
+  font-family: Arial, sans-serif;
+}
+.grid-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-rows: auto;
+  grid-template-areas:
+    "event slice zambia"
+    "table table table";
+}
+table {
+ table-layout: fixed;
+ border: 0.01in solid black;
+ border-collapse: collapse;
+}
+td {
+  border: 0.01in solid black; 
+  padding: 0.01in; 
+overflow: hidden;
+}
+.level-name {
+ border-style: solid;
+ border-width: 0.01in;
+ border-color: black Gray black black;
+ z-index: -1;
+ text-align: center;
+ white-space: nowrap;
+ vertical-align: middle;
+ width: 0.586667in;
+}
+.level-name div {
+ transform: rotate(-90deg);
+ font-size: 10px;
+ margin-left: -6em;
+ margin-right: -6em;
+}
+.room-name {
+ border-style: solid;
+ border-width: 0.01in;
+ border-color: Gray black Gray Gray;
+ z-index: -1;
+ text-align: right;
+ font-size: 11px;
+ width: 1.173333in;
+}
+.first_room {
+ border-color: black black Gray Gray;
+}
+.just-black {
+ background-color: black;
+ -webkit-print-color-adjust: exact;
+}
+.no-border {
+  border: 0;
+}
+.time-head {
+ color: white;
+ font-size: 9px;
+ background-color: black;
+ -webkit-print-color-adjust: exact;
+}
+.gray {
+  background-color: #888888;
+ -webkit-print-color-adjust: exact;
+}
+.schedule_item {
+  font-family: 'Times New Roman', serif;
+  font-size: 10px;
+}
+.event-name {
+  grid-area: event;
+}
+.page-title {
+  text-align: center;
+  font-weight: bold;
+  grid-area: slice;
+}
+.version {
+  text-align: right;
+  font-size: 8px;
+  grid-area: zambia;
+}
+.table {
+  grid-area: table;
+  /* overflow: hidden; */
+}
+.table-width {width: 10.000000in; max-width: 10.000000in; min-width: 10.000000in; } .limit-1row {overflow:hidden;max-height:0.120690in; height: 0.120690in;} .limit-2row {overflow:hidden;max-height:0.241379in; height: 0.241379in;} .limit-3row {overflow:hidden;max-height:0.362069in; height: 0.362069in;} .limit-4row {overflow:hidden;max-height:0.482759in; height: 0.482759in;} .limit-5row {overflow:hidden;max-height:0.603448in; height: 0.603448in;} .limit-6row {overflow:hidden;max-height:0.724138in; height: 0.724138in;} .limit-7row {overflow:hidden;max-height:0.844828in; height: 0.844828in;} .limit-8row {overflow:hidden;max-height:0.965517in; height: 0.965517in;} .limit-9row {overflow:hidden;max-height:1.086207in; height: 1.086207in;} .limit-1col {overflow: hidden;max-width: 0.293333in;width: 0.293333in;} .limit-2col {overflow: hidden;max-width: 0.586667in;width: 0.586667in;} .limit-3col {overflow: hidden;max-width: 0.880000in;width: 0.880000in;} .limit-4col {overflow: hidden;max-width: 1.173333in;width: 1.173333in;} .limit-5col {overflow: hidden;max-width: 1.466667in;width: 1.466667in;} .limit-6col {overflow: hidden;max-width: 1.760000in;width: 1.760000in;} .limit-7col {overflow: hidden;max-width: 2.053333in;width: 2.053333in;} .limit-8col {overflow: hidden;max-width: 2.346667in;width: 2.346667in;} .limit-9col {overflow: hidden;max-width: 2.640000in;width: 2.640000in;} .limit-10col {overflow: hidden;max-width: 2.933333in;width: 2.933333in;} .limit-11col {overflow: hidden;max-width: 3.226667in;width: 3.226667in;} .limit-12col {overflow: hidden;max-width: 3.520000in;width: 3.520000in;} .limit-13col {overflow: hidden;max-width: 3.813333in;width: 3.813333in;} .limit-14col {overflow: hidden;max-width: 4.106667in;width: 4.106667in;} .limit-15col {overflow: hidden;max-width: 4.400000in;width: 4.400000in;} .limit-16col {overflow: hidden;max-width: 4.693333in;width: 4.693333in;} .limit-17col {overflow: hidden;max-width: 4.986667in;width: 4.986667in;} .limit-18col {overflow: hidden;max-width: 5.280000in;width: 5.280000in;} .limit-19col {overflow: hidden;max-width: 5.573333in;width: 5.573333in;} .limit-20col {overflow: hidden;max-width: 5.866667in;width: 5.866667in;} .limit-21col {overflow: hidden;max-width: 6.160000in;width: 6.160000in;} .limit-22col {overflow: hidden;max-width: 6.453333in;width: 6.453333in;} .limit-23col {overflow: hidden;max-width: 6.746667in;width: 6.746667in;} .limit-24col {overflow: hidden;max-width: 7.040000in;width: 7.040000in;} .limit-25col {overflow: hidden;max-width: 7.333333in;width: 7.333333in;} .limit-26col {overflow: hidden;max-width: 7.626667in;width: 7.626667in;} .limit-27col {overflow: hidden;max-width: 7.920000in;width: 7.920000in;} .limit-28col {overflow: hidden;max-width: 8.213333in;width: 8.213333in;} .limit-29col {overflow: hidden;max-width: 8.506667in;width: 8.506667in;} .limit-30col {overflow: hidden;max-width: 8.800000in;width: 8.800000in;} .limit-31col {overflow: hidden;max-width: 9.093333in;width: 9.093333in;} .limit-32col {overflow: hidden;max-width: 9.386667in;width: 9.386667in;} 
+</style>
+<title>
+Grid for Monday Wee Hours
+</title>
+</head>
+<body>
+<div class="table-width grid-container" >
+   <span class="event-name" >
+        LAcon V
+   </span>
+   <span class="page-title">
+        Monday Wee Hours
+   </span>
+   <span class="version">
+        10-Aug
+   </span>
+
+   <div class="table" >
+     
+        <table class="table-width">
+          <thead>
+        <tr>
+        <td colspan="1" class="no-border limit-2col"></td>
+        <td colspan="1" class="no-border limit-4col"></td>
+        <td colspan="1" class="limit-1col just-black"> </td>
+                 <td colspan="1" class="limit-1col just-black"> </td>
+                 <td colspan="1" class="limit-1col just-black"> </td>
+                 <td colspan="1" class="limit-1col just-black"> </td>
+                 <td colspan="1" class="limit-1col just-black"> </td>
+                 <td colspan="1" class="limit-1col just-black"> </td>
+                 <td colspan="1" class="limit-1col just-black"> </td>
+                 <td colspan="1" class="limit-1col just-black"> </td>
+                 <td colspan="1" class="limit-1col just-black"> </td>
+                 <td colspan="1" class="limit-1col just-black"> </td>
+                 <td colspan="1" class="limit-1col just-black"> </td>
+                 <td colspan="1" class="limit-1col just-black"> </td>
+                 <td colspan="1" class="limit-1col just-black"> </td>
+                 <td colspan="1" class="limit-1col just-black"> </td>
+                 <td colspan="1" class="limit-1col just-black"> </td>
+                 <td colspan="1" class="limit-1col just-black"> </td>
+                 <td colspan="1" class="limit-1col just-black"> </td>
+                 <td colspan="1" class="limit-1col just-black"> </td>
+                 <td colspan="1" class="limit-1col just-black"> </td>
+                 <td colspan="1" class="limit-1col just-black"> </td>
+                 <td colspan="1" class="limit-1col just-black"> </td>
+                 <td colspan="1" class="limit-1col just-black"> </td>
+                 <td colspan="1" class="limit-1col just-black"> </td>
+                 <td colspan="1" class="limit-1col just-black"> </td>
+                 </tr>
+        <tr>
+        <td colspan="1" class="no-border limit-2col"></td>
+        <td colspan="1" class="no-border limit-4col"></td>
+        <td class="time-head limit-2col" colspan="2"><div class="time-head">2:00a</div></td>
+                  <td class="time-head limit-2col" colspan="2"><div class="time-head">2:30a</div></td>
+                  <td class="time-head limit-2col" colspan="2"><div class="time-head">3:00a</div></td>
+                  <td class="time-head limit-2col" colspan="2"><div class="time-head">3:30a</div></td>
+                  <td class="time-head limit-2col" colspan="2"><div class="time-head">4:00a</div></td>
+                  <td class="time-head limit-2col" colspan="2"><div class="time-head">4:30a</div></td>
+                  <td class="time-head limit-2col" colspan="2"><div class="time-head">5:00a</div></td>
+                  <td class="time-head limit-2col" colspan="2"><div class="time-head">5:30a</div></td>
+                  <td class="time-head limit-2col" colspan="2"><div class="time-head">6:00a</div></td>
+                  <td class="time-head limit-2col" colspan="2"><div class="time-head">6:30a</div></td>
+                  <td class="time-head limit-2col" colspan="2"><div class="time-head">7:00a</div></td>
+                  <td class="time-head limit-2col" colspan="2"><div class="time-head">7:30a</div></td>
+                  
+        </tr>
+          </thead>
+        <tbody>
+        
+     <tr><td rowspan="1" class="level-name"><div>ACC Arena<br/>(ACC Arena)</div></td>
+             <td class="room-name first_room limit-4col" rowspan="1"><div limit_1row">Arena</div></td>
+            <td class="gray" colspan="24" rowspan="1"><div class="limit-24col limit-1row"></div></td>
+            </tr>
+               <tr><td rowspan="24" class="level-name"><div>ACC North<br/>(ACC North)</div></td>
+             <td class="room-name first_room limit-4col" rowspan="1"><div limit_1row">251A</div></td>
+            <td class="gray" colspan="24" rowspan="1"><div class="limit-24col limit-1row"></div></td>
+            </tr>
+               <tr><td class="room-name  limit-4col" rowspan="1"><div limit_1row">251C</div></td>
+            <td class="gray" colspan="24" rowspan="1"><div class="limit-24col limit-1row"></div></td>
+            </tr>
+               <tr><td class="room-name  limit-4col" rowspan="1"><div limit_1row">253B</div></td>
+            <td class="gray" colspan="24" rowspan="1"><div class="limit-24col limit-1row"></div></td>
+            </tr>
+               <tr><td class="room-name  limit-4col" rowspan="1"><div limit_1row">254</div></td>
+            <td class="gray" colspan="24" rowspan="1"><div class="limit-24col limit-1row"></div></td>
+            </tr>
+               <tr><td class="room-name  limit-4col" rowspan="1"><div limit_1row">256B</div></td>
+            <td class="gray" colspan="24" rowspan="1"><div class="limit-24col limit-1row"></div></td>
+            </tr>
+               <tr><td class="room-name  limit-4col" rowspan="1"><div limit_1row">257</div></td>
+            <td class="gray" colspan="24" rowspan="1"><div class="limit-24col limit-1row"></div></td>
+            </tr>
+               <tr><td class="room-name  limit-4col" rowspan="1"><div limit_1row">260C</div></td>
+            <td class="gray" colspan="24" rowspan="1"><div class="limit-24col limit-1row"></div></td>
+            </tr>
+               <tr><td class="room-name  limit-4col" rowspan="1"><div limit_1row">261A</div></td>
+            <td class="gray" colspan="24" rowspan="1"><div class="limit-24col limit-1row"></div></td>
+            </tr>
+               <tr><td class="room-name  limit-4col" rowspan="1"><div limit_1row">261B</div></td>
+            <td class="gray" colspan="24" rowspan="1"><div class="limit-24col limit-1row"></div></td>
+            </tr>
+               <tr><td class="room-name  limit-4col" rowspan="1"><div limit_1row">263A</div></td>
+            <td class="gray" colspan="24" rowspan="1"><div class="limit-24col limit-1row"></div></td>
+            </tr>
+               <tr><td class="room-name  limit-4col" rowspan="1"><div limit_1row">263B</div></td>
+            <td class="gray" colspan="24" rowspan="1"><div class="limit-24col limit-1row"></div></td>
+            </tr>
+               <tr><td class="room-name  limit-4col" rowspan="1"><div limit_1row">263C</div></td>
+            <td class="gray" colspan="24" rowspan="1"><div class="limit-24col limit-1row"></div></td>
+            </tr>
+               <tr><td class="room-name  limit-4col" rowspan="1"><div limit_1row">Lobby (1.5)</div></td>
+            <td class="gray" colspan="24" rowspan="1"><div class="limit-24col limit-1row"></div></td>
+            </tr>
+               <tr><td class="room-name  limit-4col" rowspan="1"><div limit_1row">Exhibit Hall (1)</div></td>
+            <td class="gray" colspan="24" rowspan="1"><div class="limit-24col limit-1row"></div></td>
+            </tr>
+               <tr><td class="room-name  limit-4col" rowspan="1"><div limit_1row">Pedestrian Bridge (2)</div></td>
+            <td class="gray" colspan="24" rowspan="1"><div class="limit-24col limit-1row"></div></td>
+            </tr>
+               <tr><td class="room-name  limit-4col" rowspan="1"><div limit_1row">260AB</div></td>
+            <td class="gray" colspan="24" rowspan="1"><div class="limit-24col limit-1row"></div></td>
+            </tr>
+               <tr><td class="room-name  limit-4col" rowspan="1"><div limit_1row">264</div></td>
+            <td class="gray" colspan="24" rowspan="1"><div class="limit-24col limit-1row"></div></td>
+            </tr>
+               <tr><td class="room-name  limit-4col" rowspan="1"><div limit_1row">252AB</div></td>
+            <td class="gray" colspan="24" rowspan="1"><div class="limit-24col limit-1row"></div></td>
+            </tr>
+               <tr><td class="room-name  limit-4col" rowspan="1"><div limit_1row">252C</div></td>
+            <td class="gray" colspan="24" rowspan="1"><div class="limit-24col limit-1row"></div></td>
+            </tr>
+               <tr><td class="room-name  limit-4col" rowspan="1"><div limit_1row">253A</div></td>
+            <td class="gray" colspan="24" rowspan="1"><div class="limit-24col limit-1row"></div></td>
+            </tr>
+               <tr><td class="room-name  limit-4col" rowspan="1"><div limit_1row">255</div></td>
+            <td class="gray" colspan="24" rowspan="1"><div class="limit-24col limit-1row"></div></td>
+            </tr>
+               <tr><td class="room-name  limit-4col" rowspan="1"><div limit_1row">256A</div></td>
+            <td class="gray" colspan="24" rowspan="1"><div class="limit-24col limit-1row"></div></td>
+            </tr>
+               <tr><td class="room-name  limit-4col" rowspan="1"><div limit_1row">258</div></td>
+            <td class="gray" colspan="24" rowspan="1"><div class="limit-24col limit-1row"></div></td>
+            </tr>
+               <tr><td class="room-name  limit-4col" rowspan="1"><div limit_1row">259</div></td>
+            <td class="gray" colspan="24" rowspan="1"><div class="limit-24col limit-1row"></div></td>
+            </tr>
+               <tr><td rowspan="24" class="level-name"><div>Hilton<br/>(Hilton)</div></td>
+             <td class="room-name first_room limit-4col" rowspan="1"><div limit_1row">Avila B</div></td>
+            <td class="gray" colspan="24" rowspan="1"><div class="limit-24col limit-1row"></div></td>
+            </tr>
+               <tr><td class="room-name  limit-4col" rowspan="1"><div limit_1row">Carmel</div></td>
+            <td class="gray" colspan="24" rowspan="1"><div class="limit-24col limit-1row"></div></td>
+            </tr>
+               <tr><td class="room-name  limit-4col" rowspan="1"><div limit_1row">El Capitan</div></td>
+            <td class="gray" colspan="24" rowspan="1"><div class="limit-24col limit-1row"></div></td>
+            </tr>
+               <tr><td class="room-name  limit-4col" rowspan="1"><div limit_1row">Lobby</div></td>
+            <td class="gray" colspan="24" rowspan="1"><div class="limit-24col limit-1row"></div></td>
+            </tr>
+               <tr><td class="room-name  limit-4col" rowspan="1"><div limit_1row">Malibu</div></td>
+            <td class="gray" colspan="24" rowspan="1"><div class="limit-24col limit-1row"></div></td>
+            </tr>
+               <tr><td class="room-name  limit-4col" rowspan="1"><div limit_1row">Monterey</div></td>
+            <td class="gray" colspan="24" rowspan="1"><div class="limit-24col limit-1row"></div></td>
+            </tr>
+               <tr><td class="room-name  limit-4col" rowspan="1"><div limit_1row">Pacific C</div></td>
+            <td class="gray" colspan="24" rowspan="1"><div class="limit-24col limit-1row"></div></td>
+            </tr>
+               <tr><td class="room-name  limit-4col" rowspan="1"><div limit_1row">Salinas</div></td>
+            <td class="gray" colspan="24" rowspan="1"><div class="limit-24col limit-1row"></div></td>
+            </tr>
+               <tr><td class="room-name  limit-4col" rowspan="1"><div limit_1row">San Simeon A</div></td>
+            <td class="gray" colspan="24" rowspan="1"><div class="limit-24col limit-1row"></div></td>
+            </tr>
+               <tr><td class="room-name  limit-4col" rowspan="1"><div limit_1row">San Simeon B</div></td>
+            <td class="gray" colspan="24" rowspan="1"><div class="limit-24col limit-1row"></div></td>
+            </tr>
+               <tr><td class="room-name  limit-4col" rowspan="1"><div limit_1row">Santa Barbara</div></td>
+            <td class="gray" colspan="24" rowspan="1"><div class="limit-24col limit-1row"></div></td>
+            </tr>
+               <tr><td class="room-name  limit-4col" rowspan="1"><div limit_1row">Sunset</div></td>
+            <td class="gray" colspan="24" rowspan="1"><div class="limit-24col limit-1row"></div></td>
+            </tr>
+               <tr><td class="room-name  limit-4col" rowspan="1"><div limit_1row">Ventura</div></td>
+            <td class="gray" colspan="24" rowspan="1"><div class="limit-24col limit-1row"></div></td>
+            </tr>
+               <tr><td class="room-name  limit-4col" rowspan="1"><div limit_1row">Pacific A</div></td>
+            <td class="gray" colspan="24" rowspan="1"><div class="limit-24col limit-1row"></div></td>
+            </tr>
+               <tr><td class="room-name  limit-4col" rowspan="1"><div limit_1row">Palisades</div></td>
+            <td class="gray" colspan="24" rowspan="1"><div class="limit-24col limit-1row"></div></td>
+            </tr>
+               <tr><td class="room-name  limit-4col" rowspan="1"><div limit_1row">Capistrano A</div></td>
+            <td class="gray" colspan="24" rowspan="1"><div class="limit-24col limit-1row"></div></td>
+            </tr>
+               <tr><td class="room-name  limit-4col" rowspan="1"><div limit_1row">Capistrano B</div></td>
+            <td class="gray" colspan="24" rowspan="1"><div class="limit-24col limit-1row"></div></td>
+            </tr>
+               <tr><td class="room-name  limit-4col" rowspan="1"><div limit_1row">Laguna</div></td>
+            <td class="gray" colspan="24" rowspan="1"><div class="limit-24col limit-1row"></div></td>
+            </tr>
+               <tr><td class="room-name  limit-4col" rowspan="1"><div limit_1row">Pacific D</div></td>
+            <td class="gray" colspan="24" rowspan="1"><div class="limit-24col limit-1row"></div></td>
+            </tr>
+               <tr><td class="room-name  limit-4col" rowspan="1"><div limit_1row">Huntington</div></td>
+            <td class="gray" colspan="24" rowspan="1"><div class="limit-24col limit-1row"></div></td>
+            </tr>
+               <tr><td class="room-name  limit-4col" rowspan="1"><div limit_1row">Manhattan</div></td>
+            <td class="gray" colspan="24" rowspan="1"><div class="limit-24col limit-1row"></div></td>
+            </tr>
+               <tr><td class="room-name  limit-4col" rowspan="1"><div limit_1row">Palos Verdes</div></td>
+            <td class="gray" colspan="24" rowspan="1"><div class="limit-24col limit-1row"></div></td>
+            </tr>
+               <tr><td class="room-name  limit-4col" rowspan="1"><div limit_1row">Redondo</div></td>
+            <td class="gray" colspan="24" rowspan="1"><div class="limit-24col limit-1row"></div></td>
+            </tr>
+               <tr><td class="room-name  limit-4col" rowspan="1"><div limit_1row">San Clemente</div></td>
+            <td class="gray" colspan="24" rowspan="1"><div class="limit-24col limit-1row"></div></td>
+            </tr>
+               <tr><td rowspan="8" class="level-name"><div>Online<br/>(Online)</div></td>
+             <td class="room-name first_room limit-4col" rowspan="1"><div limit_1row">Discord Gaming</div></td>
+            <td class="gray" colspan="24" rowspan="1"><div class="limit-24col limit-1row"></div></td>
+            </tr>
+               <tr><td class="room-name  limit-4col" rowspan="1"><div limit_1row">Virtual 1</div></td>
+            <td class="gray" colspan="24" rowspan="1"><div class="limit-24col limit-1row"></div></td>
+            </tr>
+               <tr><td class="room-name  limit-4col" rowspan="1"><div limit_1row">Virtual 2</div></td>
+            <td class="gray" colspan="24" rowspan="1"><div class="limit-24col limit-1row"></div></td>
+            </tr>
+               <tr><td class="room-name  limit-4col" rowspan="1"><div limit_1row">Virtual 3</div></td>
+            <td class="gray" colspan="24" rowspan="1"><div class="limit-24col limit-1row"></div></td>
+            </tr>
+               <tr><td class="room-name  limit-4col" rowspan="1"><div limit_1row">Virtual 4</div></td>
+            <td class="gray" colspan="24" rowspan="1"><div class="limit-24col limit-1row"></div></td>
+            </tr>
+               <tr><td class="room-name  limit-4col" rowspan="1"><div limit_1row">Virtual 5</div></td>
+            <td class="gray" colspan="16" rowspan="1"><div class="limit-16col limit-1row"></div></td>
+            <td class="schedule_item" colspan="4" rowspan="1"><div class="limit-4col limit-1row">Nostalgia: I Just Can't Quit You (Virtual)</div></td>
+            <td class="gray" colspan="4" rowspan="1"><div class="limit-4col limit-1row"></div></td>
+            </tr>
+               <tr><td class="room-name  limit-4col" rowspan="1"><div limit_1row">Virtual Readings</div></td>
+            <td class="gray" colspan="22" rowspan="1"><div class="limit-22col limit-1row"></div></td>
+            <td class="schedule_item" colspan="1" rowspan="1"><div class="limit-1col limit-1row">Virtual Reading: Rachel Hartman</div></td>
+            <td class="schedule_item" colspan="1" rowspan="1"><div class="limit-1col limit-1row">Virtual Reading: S. M. Hallow</div></td>
+            </tr>
+               <tr><td class="room-name  limit-4col" rowspan="1"><div limit_1row">Virtual Table Talks</div></td>
+            <td class="gray" colspan="16" rowspan="1"><div class="limit-16col limit-1row"></div></td>
+            <td class="schedule_item" colspan="4" rowspan="1"><div class="limit-4col limit-1row">Virtual Table Talk: Marie Parks</div></td>
+            <td class="gray" colspan="2" rowspan="1"><div class="limit-2col limit-1row"></div></td>
+            <td class="schedule_item" colspan="2" rowspan="1"><div class="limit-2col limit-1row">Virtual Table Talk: Noor Tannir</div></td>
+            </tr>
+               
+     
+        </tbody>
+        </table>
+        
+   </div>
+</div>
+
+</body>
+</html>

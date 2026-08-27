@@ -3,7 +3,7 @@
 import math
 import re
 import bucket
-
+import location
 '''
 N.B. that we hard-code the assumption that there's only one date within
 the event's time-frame with a given day of the week. Thus, handing events
@@ -130,27 +130,29 @@ class PageTimeRange:
         return int(24*60/self.minutes_per_box)
 
 ''' Create page time ranges (what conguide calls a "slice").'''
-time_ranges = [PageTimeRange("Wee Hours", "2:00", "8:30"),
-               PageTimeRange("Morning/Afternoon", "8:30", "17:30"),
-               PageTimeRange("Evening", "17:30", "2:00") ]
+time_ranges = [PageTimeRange("Wee Hours", "2:00", "8:00"),
+               PageTimeRange("Morning", "8:00", "13:30"),
+               PageTimeRange("Afternoon", "13:30", "20:00"),
+               PageTimeRange("Evening", "20:00", "2:00") ]
+
 
 class PageBucket(bucket.Bucket):
-    def __init__(self, day, time_range):
+    def __init__(self, day, time_range, level):
         super().__init__()
         self.day = day
         self.day_number = day_number_for_day_name(self.day)
         self.time_range = time_range
-
+        self.level = level
 class PageBucketArray(bucket.BucketArray):
-    def make_buckets(self):
+    def make_buckets(self, level = None):
         for day in days:
             for time_range in time_ranges:
-                yield PageBucket(day, time_range)
+                    yield PageBucket(day, time_range, level)
 
     def index_range_for_item(self, session):
         start_day_number = day_number[session.get_day()]
         day_bin = len(time_ranges)*start_day_number 
-        day_bin -= 1;
+        day_bin -= 1
 
         start_bin = day_bin
         for time_range in time_ranges:
