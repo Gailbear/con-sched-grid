@@ -129,4 +129,5 @@ dmypy.json
 .pyre/
 
 out/
+*.html
 schedule.json
