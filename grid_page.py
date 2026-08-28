@@ -8,6 +8,10 @@ import bucket
 import contime
 import config
 
+''' Share of the window height reserved for the heading strip above a
+large-format grid, leaving the rest of the screen for the table. '''
+heading_vh = 7.0
+
 css_template = '''
 body {
   font-family: Arial, sans-serif;
@@ -327,8 +331,15 @@ class GridPage:
         r = RowDetailMaker(bucket_list, interval_max)
         return r.get_cells_for_section()
 
+    ''' Width, in cell-width units, of the labels down the left of every
+    row: the rotated level name (2) plus the room name (4). A large-format
+    page names its level in the heading, so it has no level column. '''
+    def get_label_units(self):
+        return 4 if self.level else 6
+
     def get_cell_width(self):
-        return self.get_table_width()/(6+self.time_range.interval_count()) - 0.04
+        return self.get_table_width()/(
+            self.get_label_units()+self.time_range.interval_count()) - 0.04
 
     def get_cell_height(self):
         return self.get_table_height()/(1+self.get_row_count())
@@ -339,6 +350,16 @@ class GridPage:
 
     def get_table_height(self):
         return 7.0
+
+    ''' A large-format page is read off a screen rather than printed, so it
+    is measured in viewport units instead of inches: one cell-width unit is
+    this fraction of the window width, one cell-height unit this fraction of
+    the height left over once the heading has taken its share. '''
+    def get_column_vw(self):
+        return 100.0/(self.get_label_units()+self.time_range.interval_count())
+
+    def get_row_vh(self):
+        return (100.0-heading_vh)/(1+self.get_row_count())
 
     def get_table_header(self):
         rows = '''
@@ -403,33 +424,31 @@ class GridPage:
         return '''</tr>
                '''
 
-    # TODO: use a generator function to yield sections,
-    # and refactor this function and the next to use it
-    def get_table_rows(self):
-        rows = ''
+    ''' Yield one entry per row of the grid: every section of every room on
+    each level this page covers, which is the one named level for a
+    large-format page and all of them otherwise. '''
+    def get_rows_to_render(self):
         for level in [self.level] if self.level else location.gLevelList:
             rooms = level.get_used_rooms()
             for room_index in range(len(rooms)):
                 room = rooms[room_index]
                 sections = room.get_sections()
                 for section_index in range(len(sections)):
-                    section = sections[section_index]
-                    rows += self.get_row_start(level, room, section,
-                                               (room_index == 0),
-                                               (section_index == 0))
-                    rows += self.get_detail_for_section(section)
-                    rows += self.get_row_end()
+                    yield (level, room, sections[section_index],
+                           (room_index == 0), (section_index == 0))
+
+    def get_table_rows(self):
+        rows = ''
+        for level, room, section, is_1st_room, is_1st_section in \
+                self.get_rows_to_render():
+            rows += self.get_row_start(level, room, section,
+                                       is_1st_room, is_1st_section)
+            rows += self.get_detail_for_section(section)
+            rows += self.get_row_end()
         return rows
 
     def get_row_count(self):
-        total = 0
-        for level in location.gLevelList:
-            rooms = level.get_used_rooms()
-            for room_index in range(len(rooms)):
-                room = rooms[room_index]
-                sections = room.get_sections()
-                total += len(sections)
-        return total
+        return sum(1 for _ in self.get_rows_to_render())
 
     def get_table_foot(self):
         return '''
@@ -444,15 +463,28 @@ class GridPage:
             return '<div align="center">Page %d</div>' % (self.page_number)
         return ''
 
-    def write(self):
-        fh = open(self.get_file_name(), 'wt')
-        css = Template(css_template)
+    ''' Values for the ${w_unitN}/${h_unitN} placeholders in the CSS. '''
+    def get_size_units(self):
         sizes_dict = {}
         for i in range(12):
-            sizes_dict['w_unit%d' % i] = '%fin' % (i*self.get_cell_width())
-            sizes_dict['h_unit%d' % i] = '%fin' % (i*self.get_cell_height())
-        css = css.substitute(sizes_dict)
-        css += '.table-width {width: %fin; max-width: %fin; min-width: %fin; } ' % (
+            if self.level:
+                sizes_dict['w_unit%d' % i] = '%fvw' % (i*self.get_column_vw())
+                sizes_dict['h_unit%d' % i] = '%fvh' % (i*self.get_row_vh())
+            else:
+                sizes_dict['w_unit%d' % i] = '%fin' % (i*self.get_cell_width())
+                sizes_dict['h_unit%d' % i] = '%fin' % (i*self.get_cell_height())
+        return sizes_dict
+
+    ''' Sizes for the table itself and for the limit-Ncol/limit-Nrow classes
+    that constrain each cell. Fixed inches for a printed page; a share of the
+    window for a large-format one, so that the grid fills the screen. '''
+    def get_size_css(self):
+        if self.level:
+            return self.get_screen_size_css()
+        return self.get_print_size_css()
+
+    def get_print_size_css(self):
+        css = '.table-width {width: %fin; max-width: %fin; min-width: %fin; } ' % (
             self.get_table_width(),
             self.get_table_width(),
             self.get_table_width())
@@ -462,6 +494,36 @@ class GridPage:
         for i in range(1, 33):
             css += '.limit-%dcol {overflow: hidden;max-width: %fin;width: %fin;} ' % (
                 i, self.get_cell_width()*i, self.get_cell_width()*i)
+        return css
+
+    def get_screen_size_css(self):
+        col = self.get_column_vw()
+        row = self.get_row_vh()
+        css = '''
+        html, body {height: 100%; margin: 0; overflow: hidden;}
+        .grid-container {height: 100vh; grid-template-rows: auto 1fr;}
+        .table {min-height: 0;}
+        '''
+        css += '.table-width {width: 100vw; max-width: 100vw; min-width: 0;} '
+        for i in range(1, 10):
+            css += '.limit-%drow {overflow:hidden;max-height:%fvh; height: %fvh;} ' % (
+                i, row*i, row*i)
+        for i in range(1, 33):
+            css += '.limit-%dcol {overflow: hidden;max-width: %fvw;width: %fvw;} ' % (
+                i, col*i, col*i)
+        ''' Scale the type with the cells it sits in, capped against both the
+        row height and the column width so it cannot spill out of either. '''
+        css += '.page-title {font-size: %fvh;} ' % (heading_vh*0.42)
+        css += '.room-name {font-size: min(%fvh, %fvw);} ' % (row*0.44, col*1.5)
+        css += '.time-head {font-size: min(%fvh, %fvw);} ' % (row*0.38, col*0.7)
+        css += '.schedule_item {font-size: min(%fvh, %fvw);} ' % (row*0.40, col*1.2)
+        return css
+
+    def write(self):
+        fh = open(self.get_file_name(), 'wt')
+        css = Template(css_template)
+        css = css.substitute(self.get_size_units())
+        css += self.get_size_css()
         contents = Template(main_template)
         contents = contents.substitute(title=self.get_title(),
                                        page_title_html=self.get_page_title_html(),
