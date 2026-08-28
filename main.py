@@ -9,12 +9,14 @@ from grid_page import *
 import db_fetch
 
 class PageBuilder:
-    def __init__(self, bucket, level=None):
+    def __init__(self, bucket):
         self.day = bucket.day
         self.time_range = bucket.time_range
         self.sessions = bucket.items
         self.page = None
-        self.level = level
+        # A PageBucket knows which level it holds: None when the sessions
+        # for every level share one page, a Level when they don't.
+        self.level = bucket.level
 
     def make_page(self, page_number, timestr):
         self.page = GridPage(self.day, self.time_range, self.sessions, 
@@ -29,34 +31,37 @@ class GridMaker:
         self.db = db_fetch.Database("config/schedule.json")
         self.large_format = large_format
 
-    def prep_data(self):
-        ''' Create a time bucket to hold sessions in each slice of each day.
+    def prep_data(self, contents):
+        ''' Sort the sessions into the given time buckets, one bucket per
+        slice of each day. Returns the filled container.
         '''
-        self.contents = bucket.LevelBucketArray(PageBucketArray)
-
         for session in self.db.get_session_data():
             if session.is_included_in_grid():
                 session.get_location().set_used(True)
-                self.contents.add_item(session)
+                contents.add_item(session)
+        return contents
 
-    def make_grids(self):
-        self.prep_data()
-
-        page_number = 1
-        for bucket in self.contents.get_buckets():
-            if not bucket.is_empty():
-                builder = PageBuilder(bucket)
+    def write_pages(self, contents, page_number):
+        for page_bucket in contents.get_buckets():
+            if not page_bucket.is_empty():
+                builder = PageBuilder(page_bucket)
                 builder.make_page(page_number, self.db.get_data_timestamp())
                 page_number += 1
+        return page_number
+
+    def make_grids(self):
+        ''' The default grids put every level on one page per time slice, so
+        they need the sessions bucketed by time alone. The large-format grids
+        give each level its own page, which needs a separate bucketing by
+        level as well as by time.
+        '''
+        page_number = 1
+        self.contents = self.prep_data(PageBucketArray())
+        page_number = self.write_pages(self.contents, page_number)
 
         if self.large_format:
-            for bucket in self.contents.get_buckets():
-                if not bucket.is_empty():
-                    for level in location.gLevelList:
-                        if level.get_used_rooms():
-                            builder = PageBuilder(bucket, level=level)
-                            builder.make_page(page_number, self.db.get_data_timestamp())
-                            page_number += 1
+            by_level = self.prep_data(bucket.LevelBucketArray(PageBucketArray))
+            page_number = self.write_pages(by_level, page_number)
 
         print("Done!")
 

@@ -374,7 +374,9 @@ class GridPage:
     def get_row_start(self, level, room, section, is_1st_room, 
                       is_1st_section):
         results = '<tr>'
-        if is_1st_room and is_1st_section:
+        # A large-format page covers a single level, which is named in the
+        # page heading, so it does not need the rotated level label.
+        if is_1st_room and is_1st_section and not self.level:
             results += '<td rowspan="%d" class="level-name">' % (
                 len(level.get_used_sections()) )
             results += '<div>'
