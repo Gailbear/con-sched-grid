@@ -115,7 +115,7 @@ $title
         $event
    </span>
    <span class="page-title">
-        $day $slice
+        $page_title_html
    </span>
    <span class="version">
         $zambia_ver
@@ -281,12 +281,13 @@ class RowDetailMaker:
         return results
 
 class GridPage:
-    def __init__(self, day_name, time_range, sessions, page_number, version):
+    def __init__(self, day_name, time_range, sessions, page_number, version, level=None):
         self.day_name = day_name
         self.time_range = time_range
         self.sessions_per_section = {}
         self.page_number = page_number
         self.version = version
+        self.level = level
         for section in location.get_used_sections():
             self.sessions_per_section[section] = TimeSlotBucketArray(
                 time_range, contime.day_number_for_day_name(day_name))
@@ -302,10 +303,23 @@ class GridPage:
                             Placeholder(session))
 
     def get_file_name(self):
-        return "%s%s.html" % (self.day_name[0:3], self.time_range.name[0:3])
+        base = "%s%s" % (self.day_name[0:3], self.time_range.name[0:3])
+        if self.level:
+            level_name = self.level.name.replace(" ", "").replace("/", "")
+            base += f"_{level_name}"
+        return f"{base}.html"
 
     def get_title(self):
-        return "Grid for %s %s" % (self.day_name, self.time_range.name)
+        base = "Grid for %s %s" % (self.day_name, self.time_range.name)
+        if self.level:
+            base += " - %s" % self.level.name
+        return base
+
+    def get_page_title_html(self):
+        pre = f'<span class="page-title">{self.day_name} {self.time_range.name}'
+        if self.level:
+            pre += f"<br/><strong>{self.level.name}</strong>"
+        return pre + '</span>'
 
     def get_detail_for_section(self, section):
         bucket_list = self.sessions_per_section[section]
@@ -331,29 +345,27 @@ class GridPage:
         <table class="table-width">
           <thead>
         '''
-        rows += '''<tr>
-        <td colspan="1" class="no-border limit-2col"></td>
-        <td colspan="1" class="no-border limit-4col"></td>
-        '''
+
+        rows += '<tr>'
+        if not self.level:
+            rows += '<td colspan="1" class="no-border limit-2col"></td>'
+        rows += '<td colspan="1" class="no-border limit-4col"></td>'
         for _ in range(self.time_range.interval_count()):
-            rows += '''<td colspan="1" class="limit-1col just-black"> </td>
-                 '''
+            rows += '<td colspan="1" class="limit-1col just-black"> </td>'
         rows += '</tr>'
-        rows += '''
-        <tr>
-        <td colspan="1" class="no-border limit-2col"></td>
-        <td colspan="1" class="no-border limit-4col"></td>
-        '''
+
+        rows += '<tr>'
+        if not self.level:
+            rows += '<td colspan="1" class="no-border limit-2col"></td>'
+        rows += '<td colspan="1" class="no-border limit-4col"></td>'
         for time_str in self.time_range.time_strings():
-            rows += '<td class="time-head limit-%dcol" colspan="%d">' % (
+            rows += '<td class="time-head limit-%dcol" colspan="%d"><div class="time-head">%s</div></td>' % (
                 self.time_range.intervals_per_label(),
-                self.time_range.intervals_per_label())
-            rows += '<div class="time-head">'
-            rows += time_str
-            rows += '''</div></td>
-                  '''
+                self.time_range.intervals_per_label(),
+                time_str)
+        rows += '</tr>'
+
         rows += '''
-        </tr>
           </thead>
         <tbody>
         '''
@@ -393,7 +405,7 @@ class GridPage:
     # and refactor this function and the next to use it
     def get_table_rows(self):
         rows = ''
-        for level in location.gLevelList:
+        for level in [self.level] if self.level else location.gLevelList:
             rooms = level.get_used_rooms()
             for room_index in range(len(rooms)):
                 room = rooms[room_index]
@@ -450,8 +462,7 @@ class GridPage:
                 i, self.get_cell_width()*i, self.get_cell_width()*i)
         contents = Template(main_template)
         contents = contents.substitute(title=self.get_title(),
-                                       day=self.day_name,
-                                       slice=self.time_range.name,
+                                       page_title_html=self.get_page_title_html(),
                                        theader=self.get_table_header(),
                                        detail=self.get_table_rows(),
                                        tfoot=self.get_table_foot(),
