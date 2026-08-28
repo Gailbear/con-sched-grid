@@ -25,7 +25,7 @@ class PageBuilder:
 class GridMaker:
     def __init__(self):
         self.contents = None
-        self.db = db_fetch.Database("example-data/plano_schedule.json")
+        self.db = db_fetch.Database("config/schedule.json")
 
     def prep_data(self):
         ''' Create a time bucket to hold sessions in each slice of each day.
