@@ -1,2 +1,2 @@
 #!/usr/bin/env bash
-curl -s https://planorama.lacon.org/conclar/schedule.json | jq . > schedule.json
+curl -s https://planorama.lacon.org/conclar/schedule.json | jq . > config/schedule.json

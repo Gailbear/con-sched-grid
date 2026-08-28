@@ -7,7 +7,7 @@ from zoneinfo import ZoneInfo
 cfg = configparser.ConfigParser(allow_no_value=True, strict=False,
                                 inline_comment_prefixes=('#',))
 
-cfg.read("example-data/conguide.cfg")
+cfg.read("config/conguide.cfg")
 
 event_name = cfg.get('convention', 'convention')
 tz = ZoneInfo(cfg.get('convention', 'timezone', fallback='America/New_York'))
@@ -98,5 +98,3 @@ for abbrev in cfg.items("session abbrev initial"):
 
 for abbrev in cfg.items("session abbrev continue"):
     session_continue_abbreviations[abbrev[0]] = abbrev[1]
-
-
