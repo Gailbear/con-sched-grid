@@ -17,7 +17,7 @@ Ideally the date numbering would be data-driven. But,as  long as Zambia
 and conguide have this same limitation, I'm not going to
 worry about that too much.
 ''' 
-days = ['Thurday', 'Friday', 'Saturday', 'Sunday', 'Monday', 'Tuesday']
+days = ['Thursday', 'Friday', 'Saturday', 'Sunday', 'Monday', 'Tuesday']
 
 day_number = {}
 for i in range(len(days)):

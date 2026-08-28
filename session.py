@@ -91,7 +91,7 @@ class Session:
 
     # TO-DO: add more ways to make this data-driven
     def is_included_in_grid(self):
-        return self.duration > 0 and \
+        return self.duration is not None and self.duration > 0 and \
             all(not r.is_suppressed() for r in self.get_rooms())
 
     def __key(self):
